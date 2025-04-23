@@ -52,7 +52,6 @@
 
 
 <div id="header">
-  <h1>loteria - megasena = <?php echo $_SERVER['PHP_SELF']; ?></h1>
-    <?php echo $_SERVER['PHP_SELF']; ?>
+  <h1>Engenhoca da Mega Sena = <?php echo $_SERVER['PHP_SELF']; ?></h1>
 </div>
 <br clear="all" />

@@ -3,7 +3,7 @@
 jogo;a;b;c;d;e;f; <br />
 Exemplo: <br />
 1234;1;2;22;33;44;55;
-</p>
+<?php if ($this->securityService->isAllowed()) { ?>
 <form method="post" action="inicio.php">
     <textarea name="values" id="values" size="300" style='width:400px; height:150px'></textarea>
   <input type="submit" name="Submit" value="Incluir">
@@ -11,6 +11,7 @@ Exemplo: <br />
 </form>
 
 <hr />
+<?php } ?>
 
 <?php if (isset($top10) && !empty($top10)) : ?>
 <h2>Top 10 histórico</h2>
