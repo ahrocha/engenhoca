@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories;
 
-use App\Database\DatabaseConnection;
+use App\Core\DatabaseService;
 use PDO;
 use PDOStatement;
 
@@ -9,12 +9,12 @@ class MegasenaRepository
 {
     private $connection;
 
-    public function __construct(DatabaseConnection $connection)
+    public function __construct(PDO $pdo)
     {
-        $this->connection = $connection->getConnection();
+        $this->connection = $pdo;
     }
 
-    public function getConnection(): PDO
+    public function getConnection()
     {
         return $this->connection;
     }

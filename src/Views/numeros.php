@@ -3,12 +3,15 @@
 <pre>
 <?php
 
-extract($numeros);
+if (isset($numeros) && is_array($numeros)) {
+    extract($numeros);
+    
+    echo implode(' ', $linhaA).'<br />';
+    echo implode(' ', $linhaB).'<br />';
+    echo implode(' ', $linhaC).'<br />';
+    echo implode(' ', $linhaD).'<br />';
 
-echo implode(' ', $linhaA).'<br />';
-echo implode(' ', $linhaB).'<br />';
-echo implode(' ', $linhaC).'<br />';
-echo implode(' ', $linhaD).'<br />';
+}
 
 ?>
 </pre>

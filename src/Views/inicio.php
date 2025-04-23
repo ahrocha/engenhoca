@@ -28,7 +28,8 @@ echo implode(" ", $recentTop10);
 
 <?php if (isset($ultimos20Sorteios) && !empty($ultimos20Sorteios)) : ?>
   <h2>Últimos 20 sorteios</h2>
-<table  class="table">
+
+  <table  class="table">
 <tr>
 <th>#</th>
 <th>#1</th>
@@ -53,12 +54,12 @@ $arAnterior = [];
 
 foreach($ultimos20Sorteios as $arSorteio)
 {
-    $lastTop10 = lastTop10($arSorteio["jogo"] - 10, $arSorteio["jogo"]);
+    $lastTop10 = App\Helpers\LegacyHelper::lastTop10($arSorteio["jogo"] - 10, $arSorteio["jogo"]);
     $proximojogo = $arSorteio["jogo"] + 1;
     echo "<tr>";
     echo "<td>".$arSorteio["jogo"]."</td>".PHP_EOL;
     
-    $resSorteado = obterSorteioEspecifico($arSorteio["jogo"]);
+    $resSorteado = App\Helpers\LegacyHelper::obterSorteioEspecifico($arSorteio["jogo"]);
     $maiorquarenta = 0;
     $pares = 0;
     $rep = 0;

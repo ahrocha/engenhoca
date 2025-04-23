@@ -1,23 +1,27 @@
 <?php
 
-include_once("header.php");
-require_once "../lib/lib.inc.comum.php";
-
 $strSQL = "SELECT jogo FROM tbl_Sena GROUP BY jogo ORDER BY jogo DESC LIMIT 1";
 
 $numeros1a60 = range(1, 60);
 
-$res = $conexao->select($strSQL);
+$res = $conexao->query($strSQL);
+if ($res === false) {
+    die("Erro na consulta: " . $conexao->error);
+}
+$res = $res->fetchAll();
+if (empty($res)) {
+    die("Nenhum resultado encontrado.");
+}
 $nrUltimo = $res[0]["jogo"];
 
 $exibidos = 0;
 $exibir = 20;
 $limit = 100;
 
-if ($_GET["gerar-csv"] === 'sim') {
-    $limit = 3000;
-    $csvFilename = 'pepe_'.$nrUltimo . '.csv';
-}
+// if ($_GET["gerar-csv"] === 'sim') {
+//     $limit = 3000;
+//     $csvFilename = 'pepe_'.$nrUltimo . '.csv';
+// }
 $csv = [];
 
 function escolhe_itens_aleatorios($array, $numero_de_itens) {
@@ -44,27 +48,27 @@ for ($i = 0; $i < $limit; $i++) {
     $nrDezAtras = $sorteio - 10;
 
     $strSQL = "SELECT num FROM tbl_Sena WHERE jogo = $proximo";
-    $result = $conn->query($strSQL);
+    $result = $conexao->query($strSQL);
 
     $sorteadosProximo = array();
-    while($row = $result->fetch_assoc()) {
+    while($row = $result->fetch()) {
         $sorteadosProximo[] = $row['num'];
     }
 
     $strSQL = "SELECT num FROM tbl_Sena WHERE jogo = $sorteio";
-    $result = $conn->query($strSQL);
+    $result = $conexao->query($strSQL);
     $sorteadosAtual = array();
-    while($row = $result->fetch_assoc()) {
+    while($row = $result->fetch()) {
         $sorteadosAtual[] = $row['num'];
     }
 
     // números que saíram nos últimos 10 sorteios
     $strSQL = "SELECT num AS cd, COUNT(*) as qtdd_ultimas FROM `tbl_Sena` WHERE jogo > $nrDezAtras and jogo <= $sorteio GROUP BY num; ";
-    $result = $conn->query($strSQL);
+    $result = $conexao->query($strSQL);
     $numerosSorteadosUmaVezDezUltimos = [];
     $numerosSorteadosDuasVezesDezUltimos = [];
     $numerosSorteadosQuatroVezesDezUltimos = [];
-    while($array = $result->fetch_assoc())
+    while($array = $result->fetch())
     {
         $numerosSorteadosUmaVezDezUltimos[] = $array["cd"];
         if ($array["qtdd_ultimas"] >= 2){
@@ -78,10 +82,10 @@ for ($i = 0; $i < $limit; $i++) {
     // $numerosSorteadosUmaVezCincoUltimos
     $strSQL = "SELECT num AS cd, COUNT(*) as qtdd_ultimas FROM `tbl_Sena` WHERE jogo > $nrCincoAtras and jogo <= $sorteio GROUP BY num; ";
 
-    $result = $conn->query($strSQL);
+    $result = $conexao->query($strSQL);
     $numerosSorteadosUmaVezCincoUltimos = [];
     $numerosSorteadosTresVezesCincoUltimos = [];
-    while($array = $result->fetch_assoc())
+    while($array = $result->fetch())
     {
         $numerosSorteadosUmaVezCincoUltimos[] = $array["cd"];
         if ($array["qtdd_ultimas"] >= 3){
@@ -92,9 +96,9 @@ for ($i = 0; $i < $limit; $i++) {
     // $numerosSorteadosUmaVezCincoPenultimos
     $strSQL = "SELECT num AS cd, COUNT(*) as qtdd_ultimas FROM `tbl_Sena` WHERE jogo <= $nrCincoAtras AND jogo > $nrDezAtras GROUP BY num; ";
 
-    $result = $conn->query($strSQL);
+    $result = $conexao->query($strSQL);
     $numerosSorteadosUmaVezCincoPenultimos = [];
-    while($array = $result->fetch_assoc())
+    while($array = $result->fetch())
     {
         $numerosSorteadosUmaVezCincoPenultimos[] = $array["cd"];
     }
@@ -174,7 +178,7 @@ for ($i = 0; $i < $limit; $i++) {
     // if exists 'pepe_'.$nrUltimo . '.csv' , generate a link to download it
     if (file_exists("../csv/pepe_$sorteio.csv")) {
         echo '<a href="../csv/pepe_'.$sorteio.'.csv">Baixar CSV</a>';
-    } else if ($nrUltimo == $sorteio && $_GET["gerar-csv"] !== 'sim') {
+    } else if ($nrUltimo == $sorteio && isset($_GET["gerar-csv"]) && $_GET["gerar-csv"] !== 'sim') {
         echo '<a href="?gerar-csv=sim">Gerar CSV</a>';
     }
 

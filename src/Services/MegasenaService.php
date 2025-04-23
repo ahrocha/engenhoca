@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\MegasenaRepository;
+use App\Helpers\LegacyHelper;
 
 class MegasenaService
 {
@@ -93,7 +94,7 @@ class MegasenaService
         $conn->query($strSQL);
         
         for($i=11;$i<=$ultimoSorteio;$i++) {
-            $arSorteados = fnSena($i);
+            $arSorteados = LegacyHelper::fnSena($i);
             $j = $i - 10;
             echo "<p><b>$i ~ $j</b><br>\n";
             print_r($arSorteados);
@@ -329,11 +330,6 @@ class MegasenaService
         $maisLimpos = array();
 
         foreach ($mais as $array) {
-            // var_dump($nrPenultimo);
-            // var_dump($array);
-            // if (!in_array($array["ultima"], [$nrUltimo, $nrPenultimo])) {
-            //     $maisLimpos[] = $array["cd"];
-            // }
             $maisLimpos[] = $array["cd"];
         }
 
@@ -342,8 +338,6 @@ class MegasenaService
         $linhaB = $escolhidos[1];
         $linhaC = $escolhidos[2];
         $linhaD = $escolhidos[3];
-
-        // ///////////////////////////////////////
 
         ?>
         
@@ -433,7 +427,7 @@ $result = $conn->query($strSQL);
 while($array = $result->fetch())
 {
 	if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-	echo fnDoisDigitos($array["cd"]);
+	echo LegacyHelper::fnDoisDigitos($array["cd"]);
 	if(in_array(strval($array["cd"]), $resultadosConcursos[$nrUltimoConcurso])){ echo "*";}
 	if ($array["ultima"] == $nrUltimo){echo "</font>";}
 	echo " &nbsp; ";
@@ -450,7 +444,7 @@ while($array = $result->fetch()) {
 	$numerosMaisSairamUltimosDez[] = $array["cd"];
 
 	if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-	echo fnDoisDigitos($array["cd"])."(".$array["ultima"]."/".$array["qtdd_ultimas"].")";
+	echo LegacyHelper::fnDoisDigitos($array["cd"])."(".$array["ultima"]."/".$array["qtdd_ultimas"].")";
 
     if ($array["ultima"] == $nrUltimo){echo "</font>";}
 
@@ -471,16 +465,16 @@ while($array = $result->fetch())
 		continue;
 	}
 	$somenteNumerosDuasVezesUltimosDez[] = $array["cd"];
-	if (snUltimoJogo($array["cd"])){
+	if (LegacyHelper::snUltimoJogo($array["cd"])){
 		echo "<strong>";
 	}else{
 		$numerosMaisSairamUltimosDez[] = $array["cd"];
 	}
 	if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-	echo fnDoisDigitos($array["cd"])."(".$array["ultima"]."/".$array["qtdd_ultimas"].")";
-	if(snUltimosJogos($array["cd"])){ echo "*";}
+	echo LegacyHelper::fnDoisDigitos($array["cd"])."(".$array["ultima"]."/".$array["qtdd_ultimas"].")";
+	if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
 	if ($array["ultima"] == $nrUltimo){echo "</font>";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " &nbsp; ";
 	
 }
@@ -565,23 +559,23 @@ $grupoUm = array_intersect($somenteNumerosCincoUltimos, $somenteNumerosDuasVezes
 </h2>
 <?php
 $strSQL = "SELECT num AS cd, COUNT(*) as qtdd_ultimas FROM `tbl_Sena` WHERE jogo <= $nrCincoAtras AND jogo > $nrDezAtras GROUP BY num; ";
-echo '<p>'.__LINE__.' : '.$strSQL.'</p>';
+
 $result = $conn->query($strSQL);
 $somenteNumeros = array();
 while($array = $result->fetch())
 {
 	$somenteNumeros[] = $array["cd"];
-	if (snUltimoJogo($array["cd"])){
-		echo "<strong>";
+	if (LegacyHelper::snUltimoJogo($array["cd"])){
+		// echo "<strong>";
 	}else{
 		$numerosMaisSairamUltimosDez[] = $array["cd"];
 	}
 	var_dump($array);continue;
 	if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-	echo fnDoisDigitos($array["cd"])."(".$array["ultima"]."/".$array["qtdd_ultimas"].")";
-	if(snUltimosJogos($array["cd"])){ echo "*";}
+	echo LegacyHelper::fnDoisDigitos($array["cd"])."(".$array["ultima"]."/".$array["qtdd_ultimas"].")";
+	if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
 	if ($array["ultima"] == $nrUltimo){echo "</font>";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " &nbsp; ";
 	
 }
@@ -644,12 +638,12 @@ $strSQL = "SELECT * FROM tbl_SenaNum WHERE qtdd_ultimas > 0 ORDER BY ultima ";
 $result = $conn->query($strSQL);
 while($array = $result->fetch())
 {
-	if (snUltimoJogo($array["cd"])){echo "<strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "<strong>";}
 		if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-			echo fnDoisDigitos($array["cd"])."(".$array["ultima"].")";
-			if(snUltimosJogos($array["cd"])){ echo "*";}
+			echo LegacyHelper::fnDoisDigitos($array["cd"])."(".$array["ultima"].")";
+			if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
 		if ($array["ultima"] == $nrUltimo){echo "</font>";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " &nbsp; ";
 }
 ?></p>
@@ -660,12 +654,12 @@ $strSQL = "SELECT * FROM tbl_SenaNum WHERE qtdd_ultimas = 1 ORDER BY ultima ";
 $result = $conn->query($strSQL);
 while($array = $result->fetch())
 {
-	if (snUltimoJogo($array["cd"])){echo "<strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "<strong>";}
 		if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-			echo fnDoisDigitos($array["cd"]); //."(".$array["ultima"].")";
-			//if(snUltimosJogos($array["cd"])){ echo "*";}
+			echo LegacyHelper::fnDoisDigitos($array["cd"]); //."(".$array["ultima"].")";
+			//if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
 		if ($array["ultima"] == $nrUltimo){echo "</font>";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " ";
 }
 
@@ -678,12 +672,12 @@ while($array = $result->fetch())
 {
 	if ( $i == 3 or $i == 6 or $i == 11 or $i == 13 or $i == 15 or $i == 17 or $i == 21 or $i == 23 or $i == 25 or $i == 27 ){echo "<br\n>";}
 	if ( $i == 9 or $i == 19 or $i == 29 ) {echo "<br>\n<br>\n";}
-	if (snUltimoJogo($array["cd"])){echo "<strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "<strong>";}
 		if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-			echo fnDoisDigitos($array["cd"]); //."(".$array["ultima"].")";
-			//if(snUltimosJogos($array["cd"])){ echo "*";}
+			echo LegacyHelper::fnDoisDigitos($array["cd"]); //."(".$array["ultima"].")";
+			//if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
 		if ($array["ultima"] == $nrUltimo){echo "</font>";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " ";
 	$i++;
 }
@@ -699,12 +693,12 @@ while($array = $result->fetch())
 {
 	if ( $i == 8 or $i == 16 ) {echo "<br>\n";}
 	if ( $i == 24 ) {echo "</div><br>\n<br>\n";}
-	if (snUltimoJogo($array["cd"])){echo "<strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "<strong>";}
 		if ($array["ultima"] == $nrUltimo){echo "<font color=red>";}
-			echo fnDoisDigitos($array["cd"]); //."(".$array["ultima"].")";
-			//if(snUltimosJogos($array["cd"])){ echo "*";}
+			echo LegacyHelper::fnDoisDigitos($array["cd"]); //."(".$array["ultima"].")";
+			//if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
 		if ($array["ultima"] == $nrUltimo){echo "</font>";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " ";
 	$i++;
 }
@@ -719,10 +713,10 @@ $strSQL = "SELECT * FROM tbl_SenaNum WHERE qtdd_ultimas = 0 ORDER BY ultima ";
 $result = $conn->query($strSQL);
 while($array = $result->fetch())
 {
-	if (snUltimoJogo($array["cd"])){echo "<strong>";}
-	echo fnDoisDigitos($array["cd"])."(".$array["ultima"].")";
-	if(snUltimosJogos($array["cd"])){ echo "*";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "<strong>";}
+	echo LegacyHelper::fnDoisDigitos($array["cd"])."(".$array["ultima"].")";
+	if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " &nbsp; ";
 }
 ?></p>
@@ -760,10 +754,10 @@ $strSQL = "SELECT * FROM tbl_SenaNum ORDER BY qtdd DESC, ultima";
 $result = $conn->query($strSQL);
 while($array = $result->fetch()){
 	echo "<li>";
-	if (snUltimoJogo($array["cd"])){echo "<strong>";}
-	echo fnDoisDigitos($array["cd"])."(".$array["ultima"].")(".$array["qtdd"].")";
-	if(snUltimosJogos($array["cd"])){ echo "*";}
-	if (snUltimoJogo($array["cd"])){echo "</strong>";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "<strong>";}
+	echo LegacyHelper::fnDoisDigitos($array["cd"])."(".$array["ultima"].")(".$array["qtdd"].")";
+	if(LegacyHelper::snUltimosJogos($array["cd"])){ echo "*";}
+	if (LegacyHelper::snUltimoJogo($array["cd"])){echo "</strong>";}
 	echo " &nbsp; ";
 
 	echo "</li>";
@@ -779,7 +773,7 @@ $limite = 6;
 $grupos = 0;
 while($array = $result->fetch()) {
 	$l++;
-	echo fnDoisDigitos($array["cd"]);
+	echo LegacyHelper::fnDoisDigitos($array["cd"]);
 	
 	if ($l >= $limite)
 	{
@@ -1248,7 +1242,7 @@ while($array = $result->fetch()){
         while($arJogo = $stmt->fetch()) {
             $i++;
             if ($i == $frequencia) {
-                echo fnDoisDigitos($arJogo["a"])." ".fnDoisDigitos($arJogo["b"])." ".fnDoisDigitos($arJogo["c"])." ".fnDoisDigitos($arJogo["d"])." ".fnDoisDigitos($arJogo["e"])." ".fnDoisDigitos($arJogo["f"])." \n";    
+                echo LegacyHelper::fnDoisDigitos($arJogo["a"])." ".LegacyHelper::fnDoisDigitos($arJogo["b"])." ".LegacyHelper::fnDoisDigitos($arJogo["c"])." ".LegacyHelper::fnDoisDigitos($arJogo["d"])." ".LegacyHelper::fnDoisDigitos($arJogo["e"])." ".LegacyHelper::fnDoisDigitos($arJogo["f"])." \n";    
                 $i = 0;
                 $linha++;
                 unset($primeiro);
@@ -1257,4 +1251,10 @@ while($array = $result->fetch()){
             }
         }
     }
+
+    public function exibirPepe() {
+        $conexao = $this->repository->getConnection();
+        include_once __DIR__ . '/../Views/pepe.php';
+    }
+
 }
