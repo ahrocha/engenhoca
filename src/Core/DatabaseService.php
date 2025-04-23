@@ -25,10 +25,10 @@ class DatabaseService
     {
         if (!self::$connection) {
             self::initializeLogger();
-            $host = $_ENV['ENGENHOCA_DB_HOST'] ?? 'localhost';
-            $db   = $_ENV['ENGENHOCA_DB_NAME'] ?? 'engenhoca';
-            $user = $_ENV['ENGENHOCA_DB_USER'] ?? 'engenhoca';
-            $pass = $_ENV['ENGENHOCA_DB_PASS'] ?? 'engenhoca';
+            $host = getenv('ENGENHOCA_DB_HOST') ?? 'localhost';
+            $db   = getenv('ENGENHOCA_DB_NAME') ?? 'engenhoca';
+            $user = getenv('ENGENHOCA_DB_USER') ?? 'engenhoca';
+            $pass = getenv('ENGENHOCA_DB_PASS') ?? 'engenhoca';
 
             $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
@@ -37,7 +37,7 @@ class DatabaseService
                 self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 self::$logger->error('Erro ao conectar com o banco de dados: ' . $e->getMessage());
-                echo "Erro ao conectar com o banco de dados: ";
+                echo "Erro ao conectar com o banco de dados: " . $host . " - " . $db . " - " . $user;
                 die();
             }
         }
