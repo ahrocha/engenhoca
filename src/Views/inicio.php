@@ -39,7 +39,9 @@ echo implode(" ", $recentTop10);
 <th>#4</th>
 <th>#5</th>
 <th>#6</th>
+<?php if ($this->securityService->isAllowed()) { ?>
 <th>excluir</th>
+<?php } ?>
 <th>rep 2 ants</th>
 <th>rep</th>
 <th>top10</th>
@@ -69,7 +71,6 @@ foreach($ultimos20Sorteios as $arSorteio)
     $isLastTop10 = 0;
     $repetidosDoisAnteriores = [];
     
-    // while($arSorteado = $resSorteado->fetch_array())
     foreach($resSorteado as $arSorteado)
     {
         $arEste[] = $arSorteado["num"];
@@ -106,8 +107,10 @@ foreach($ultimos20Sorteios as $arSorteio)
     $doisAnteriores = $arAnterior;
     $arAnterior = $arEste;
     unset ($arEste);
-    echo "<td><a href=\"inicio.php?excluir=".$arSorteio["jogo"]."\">excluir</a></td>".PHP_EOL;
-    // $doisAnteriores is an array. Echo the items separated by space
+    if ($this->securityService->isAllowed()) {
+        echo "<td><a href=\"inicio.php?excluir=".$arSorteio["jogo"]."\">excluir</a></td>".PHP_EOL;
+    }
+
     echo "<td>".implode(" ", $repetidosDoisAnteriores)."</td>".PHP_EOL;
     echo "<td> $rep </td>".PHP_EOL;
     echo "<td> $isTop10 </td>".PHP_EOL;
