@@ -1,2 +1,3 @@
 vendor/
 app.log
+.php-cs-fixer.cache
