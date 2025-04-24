@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Core\DatabaseService;
@@ -51,7 +52,8 @@ class MegasenaRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function lastTop10($sorteioInicial = 0, $sorteioFinal = 0) {
+    public function lastTop10($sorteioInicial = 0, $sorteioFinal = 0)
+    {
         $strSQL = "SELECT num, COUNT(*) AS total FROM tbl_Sena WHERE jogo > $sorteioInicial and jogo < $sorteioFinal GROUP BY num ORDER BY total DESC ";
         $stmt = $this->connection->query($strSQL);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

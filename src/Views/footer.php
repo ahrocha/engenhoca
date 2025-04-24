@@ -1,4 +1,4 @@
-﻿
+
 <div id="footer">
 <p>rodapé</p>
 </div>

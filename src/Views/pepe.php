@@ -24,7 +24,8 @@ $limit = 100;
 // }
 $csv = [];
 
-function escolhe_itens_aleatorios($array, $numero_de_itens) {
+function escolhe_itens_aleatorios($array, $numero_de_itens)
+{
     $chaves_aleatorias = array_rand($array, $numero_de_itens);
     $itens_aleatorios = [];
 
@@ -42,7 +43,9 @@ function escolhe_itens_aleatorios($array, $numero_de_itens) {
 
 for ($i = 0; $i < $limit; $i++) {
     $sorteio = $nrUltimo - $i;
-    if ($sorteio < 10) break;
+    if ($sorteio < 10) {
+        break;
+    }
     $proximo = $sorteio + 1;
     $nrCincoAtras = $sorteio - 5;
     $nrDezAtras = $sorteio - 10;
@@ -51,14 +54,14 @@ for ($i = 0; $i < $limit; $i++) {
     $result = $conexao->query($strSQL);
 
     $sorteadosProximo = array();
-    while($row = $result->fetch()) {
+    while ($row = $result->fetch()) {
         $sorteadosProximo[] = $row['num'];
     }
 
     $strSQL = "SELECT num FROM tbl_Sena WHERE jogo = $sorteio";
     $result = $conexao->query($strSQL);
     $sorteadosAtual = array();
-    while($row = $result->fetch()) {
+    while ($row = $result->fetch()) {
         $sorteadosAtual[] = $row['num'];
     }
 
@@ -68,13 +71,12 @@ for ($i = 0; $i < $limit; $i++) {
     $numerosSorteadosUmaVezDezUltimos = [];
     $numerosSorteadosDuasVezesDezUltimos = [];
     $numerosSorteadosQuatroVezesDezUltimos = [];
-    while($array = $result->fetch())
-    {
+    while ($array = $result->fetch()) {
         $numerosSorteadosUmaVezDezUltimos[] = $array["cd"];
-        if ($array["qtdd_ultimas"] >= 2){
+        if ($array["qtdd_ultimas"] >= 2) {
             $numerosSorteadosDuasVezesDezUltimos[] = $array["cd"];
         }
-        if ($array["qtdd_ultimas"] >= 4){
+        if ($array["qtdd_ultimas"] >= 4) {
             $numerosSorteadosQuatroVezesDezUltimos[] = $array["cd"];
         }
     }
@@ -85,10 +87,9 @@ for ($i = 0; $i < $limit; $i++) {
     $result = $conexao->query($strSQL);
     $numerosSorteadosUmaVezCincoUltimos = [];
     $numerosSorteadosTresVezesCincoUltimos = [];
-    while($array = $result->fetch())
-    {
+    while ($array = $result->fetch()) {
         $numerosSorteadosUmaVezCincoUltimos[] = $array["cd"];
-        if ($array["qtdd_ultimas"] >= 3){
+        if ($array["qtdd_ultimas"] >= 3) {
             $numerosSorteadosTresVezesCincoUltimos[] = $array["cd"];
         }
     }
@@ -98,23 +99,22 @@ for ($i = 0; $i < $limit; $i++) {
 
     $result = $conexao->query($strSQL);
     $numerosSorteadosUmaVezCincoPenultimos = [];
-    while($array = $result->fetch())
-    {
+    while ($array = $result->fetch()) {
         $numerosSorteadosUmaVezCincoPenultimos[] = $array["cd"];
     }
 
     $grupoUm = array_intersect($numerosSorteadosUmaVezCincoUltimos, $numerosSorteadosDuasVezesDezUltimos);
     // $grupoUm = array_diff($grupoUm, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosTresVezesCincoUltimos);
     $sorteadosGrupoUm = array_intersect($grupoUm, $sorteadosProximo);
-    
+
     $grupoDois = array_diff(array_intersect($numerosSorteadosUmaVezDezUltimos, $numerosSorteadosUmaVezCincoUltimos), $grupoUm);
     $grupoDois = array_diff($grupoDois, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosTresVezesCincoUltimos);
     $sorteadosGrupoDois = array_intersect($grupoDois, $sorteadosProximo);
-    
+
     $grupoTres = array_diff(array_intersect($numerosSorteadosUmaVezDezUltimos, $numerosSorteadosUmaVezCincoPenultimos), $grupoUm, $grupoDois);
     $grupoTres = array_diff($grupoTres, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosTresVezesCincoUltimos);
     $sorteadosGrupoTres = array_intersect($grupoTres, $sorteadosProximo);
-    
+
     $grupoQuatro = array_diff($numeros1a60, $grupoUm, $grupoDois, $grupoTres);
     $grupoQuatro = array_diff($grupoQuatro, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosQuatroVezesDezUltimos, $numerosSorteadosTresVezesCincoUltimos);
     $sorteadosGrupo4 = array_intersect($grupoQuatro, $sorteadosProximo);
@@ -169,21 +169,21 @@ for ($i = 0; $i < $limit; $i++) {
     if ($exibidos < $exibir) {
         $exibidos++;
 
-    ?>
+        ?>
     <div style="border: 1px solid pink; padding: 5px; width: 100%;">
     <?php
 
-    echo '<h2>Números até o sorteio ' . $sorteio . ' para jogar no '.$proximo.'</h2>';
+        echo '<h2>Números até o sorteio ' . $sorteio . ' para jogar no '.$proximo.'</h2>';
 
-    // if exists 'pepe_'.$nrUltimo . '.csv' , generate a link to download it
-    if (file_exists("../csv/pepe_$sorteio.csv")) {
-        echo '<a href="../csv/pepe_'.$sorteio.'.csv">Baixar CSV</a>';
-    } else if ($nrUltimo == $sorteio && isset($_GET["gerar-csv"]) && $_GET["gerar-csv"] !== 'sim') {
-        echo '<a href="?gerar-csv=sim">Gerar CSV</a>';
-    }
+        // if exists 'pepe_'.$nrUltimo . '.csv' , generate a link to download it
+        if (file_exists("../csv/pepe_$sorteio.csv")) {
+            echo '<a href="../csv/pepe_'.$sorteio.'.csv">Baixar CSV</a>';
+        } elseif ($nrUltimo == $sorteio && isset($_GET["gerar-csv"]) && $_GET["gerar-csv"] !== 'sim') {
+            echo '<a href="?gerar-csv=sim">Gerar CSV</a>';
+        }
 
-    echo '<p>Resultados do sorteio seguinte: ('.$proximo.') - ' . implode(' | ', $saidaSorteadosProximo) . '</p>';
-    ?>
+        echo '<p>Resultados do sorteio seguinte: ('.$proximo.') - ' . implode(' | ', $saidaSorteadosProximo) . '</p>';
+        ?>
     
         <p>Numeros Sorteados Quatro Vezes Dez Ultimos (<?php echo count($numerosSorteadosQuatroVezesDezUltimos); ?>): <?php echo implode(' ', $numerosSorteadosQuatroVezesDezUltimos); ?></p>
         <p>Numeros sorteados três vezes 5 últimos (<?php echo count($numerosSorteadosTresVezesCincoUltimos); ?>): <?php echo implode(' ', $numerosSorteadosTresVezesCincoUltimos); ?></p>
@@ -204,9 +204,9 @@ for ($i = 0; $i < $limit; $i++) {
         </p>
         
         <?php
-        
-        if (empty($saidaSorteadosProximo)) {
-            ?>
+
+            if (empty($saidaSorteadosProximo)) {
+                ?>
             <hr /><p>Jogar:</p>
             <p><?php echo implode(' ', escolhe_itens_aleatorios($grupoUm, 7)); ?>
             <p><?php echo implode(' ', escolhe_itens_aleatorios($grupoDois, 6)); ?></p>
@@ -214,14 +214,14 @@ for ($i = 0; $i < $limit; $i++) {
             <?php
 
 
-        }
-        
+            }
+
         ?>
 
     </div>
     <hr />
     <?php
-        
+
     }
 
 

@@ -9,14 +9,15 @@ Qtdd de jogos: <input type="text" name="qtdd" value="100">
 <br><br>
 <?php
 
-function countSequencias( array $num ){
-    
+function countSequencias(array $num)
+{
+
     sort($num);
     $count = count($num);
     $actual = null;
     $return = 0;
-    for ($i=0; $i < $count; $i++) { 
-        if(!is_null( $actual ) && ($num[$i] - $actual) == 1 ){
+    for ($i = 0; $i < $count; $i++) {
+        if (!is_null($actual) && ($num[$i] - $actual) == 1) {
             $return++;
         }
         $actual = $num[$i];
@@ -26,12 +27,12 @@ function countSequencias( array $num ){
 
 }
 
-switch(@$_POST["f"]){
+switch (@$_POST["f"]) {
 
     case "segundo_maior_que_dez":
 
         ?>
-        <h3>Eliminando quando há 2 números menores ou iguais 10. </h3><?php 
+        <h3>Eliminando quando há 2 números menores ou iguais 10. </h3><?php
         $strSQL = "SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos ";
         $res = $conn->query($strSQL);
         $ar = $res->fetch_array();
@@ -52,33 +53,33 @@ switch(@$_POST["f"]){
 
         break;
 
-        case "terceiro_maior_que_dez":
-    
-            ?>
-            <h3>Eliminando quando há 3 números menores ou iguais 10. </h3><?php 
-            $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos ";
-            $res = $conn->query($strSQL);
-            $ar = $res->fetch_array();
-            echo "Inicial: " . $ar["nrTotal"] .'<br />';
-    
-            $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos WHERE c <= 10 ";
-            $res = $conn->query($strSQL);
-            $ar = $res->fetch_array();
-            echo "> 10: " . $ar["nrTotal"].'<br />';
-    
-            $strSQL = "DELETE FROM tbl_SenaJogos WHERE c <= 10 ";
-            $conn->query($strSQL);
-    
-            $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos ";
-            $res = $conn->query($strSQL);
-            $ar = $res->fetch_array();
-            echo "Resultados: " . $ar["nrTotal"] .'<br />';
-    
-            break;
+    case "terceiro_maior_que_dez":
+
+        ?>
+            <h3>Eliminando quando há 3 números menores ou iguais 10. </h3><?php
+        $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos ";
+        $res = $conn->query($strSQL);
+        $ar = $res->fetch_array();
+        echo "Inicial: " . $ar["nrTotal"] .'<br />';
+
+        $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos WHERE c <= 10 ";
+        $res = $conn->query($strSQL);
+        $ar = $res->fetch_array();
+        echo "> 10: " . $ar["nrTotal"].'<br />';
+
+        $strSQL = "DELETE FROM tbl_SenaJogos WHERE c <= 10 ";
+        $conn->query($strSQL);
+
+        $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos ";
+        $res = $conn->query($strSQL);
+        $ar = $res->fetch_array();
+        echo "Resultados: " . $ar["nrTotal"] .'<br />';
+
+        break;
 
     case "um_digito":
 
-        ?><h3>Eliminando quando não há nenhum número menor ou igual a 10. </h3><?php 
+        ?><h3>Eliminando quando não há nenhum número menor ou igual a 10. </h3><?php
         $strSQL = " SELECT COUNT(*) as nrTotal FROM tbl_SenaJogos ";
         $res = $conn->query($strSQL);
         $ar = $res->fetch_array();
@@ -107,13 +108,12 @@ switch(@$_POST["f"]){
 
         $executar = $_POST["acao"] == "executar";
 
-        while($ar = $res->fetch_array())
-        {
+        while ($ar = $res->fetch_array()) {
             $array = array($ar["a"], $ar["b"], $ar["c"], $ar["d"], $ar["e"], $ar["f"]);
 
             if (endsWithSameDigit($array, 2)) {
                 $deleted++;
-                if(!$executar){
+                if (!$executar) {
                     continue;
                 }
                 $strSQL = "DELETE FROM tbl_SenaJogos WHERE cd = ".$ar["cd"]." LIMIT 1 ";
@@ -123,7 +123,7 @@ switch(@$_POST["f"]){
             unset($array);
             unset($ar);
         }
-        
+
         if ($executar) {
             echo "<p>Foram excluídos <strong>$deleted</strong> jogos.</p>";
         } else {
@@ -134,32 +134,30 @@ switch(@$_POST["f"]){
 
     case "sequencias3":
         $deleted = 0;
-        ?><h3>Eliminando sequências de  3 números </h3><?php 
+        ?><h3>Eliminando sequências de  3 números </h3><?php
         $strSQL = " SELECT * FROM tbl_SenaJogos ";
         $res = $conn->query($strSQL);
 
-        while($ar = $res->fetch_array())
-        {
+        while ($ar = $res->fetch_array()) {
 
             $count = countSequencias($ar) ;
-            if ($count > 2){
+            if ($count > 2) {
                 $strSQL = "DELETE FROM tbl_SenaJogos WHERE cd = ".$ar["cd"]." LIMIT 1 ";
                 $conn->query($strSQL);
                 $deleted++;
-            } 
+            }
         }
 
-        ?><p>FOram excluídos <strong><?php echo $deleted; ?></strong> jogos </p><?php 
+        ?><p>FOram excluídos <strong><?php echo $deleted; ?></strong> jogos </p><?php
 
         break;
 
     case "media":
 
-        ?><p>Eliminando médias < 10 e média > 45</p><?php 
+        ?><p>Eliminando médias < 10 e média > 45</p><?php
         $strSQL = " SELECT * FROM tbl_SenaJogos ";
         $res = $conn->query($strSQL);
-        while($ar = $res->fetch_array())
-        {
+        while ($ar = $res->fetch_array()) {
             $soma = $ar["a"] + $ar["b"] + $ar["c"] + $ar["d"] + $ar["e"] + $ar["f"] ;
             $media = floor($soma / 6) ;
             $strSQL = "UPDATE tbl_SenaJogos SET media = $media WHERE cd = ".$ar["cd"]." LIMIT 1 ";
@@ -174,40 +172,39 @@ switch(@$_POST["f"]){
 
         break;
 
-case "primos":
+    case "primos":
 
-    ?><p>Eliminando mais que 3 primos</p><?php 
-    $strSQL = " SELECT * FROM tbl_SenaJogos ";
+        ?><p>Eliminando mais que 3 primos</p><?php
+        $strSQL = " SELECT * FROM tbl_SenaJogos ";
         // $resSorteios = $conn->query($strSQL);
         // while($arSorteio = $resSorteios->fetch_array())
-    $res = $conn->query($strSQL);
-    while($ar = $res->fetch_array())
-    {
-        $primos = 0;
-        //if (in_array($arSorteado["num"], $numerosPrimos)){$primos++;}
-        $primos += in_array($ar["a"], $numerosPrimos) ? 1 : 0;
-        $primos += in_array($ar["b"], $numerosPrimos) ? 1 : 0;
-        $primos += in_array($ar["c"], $numerosPrimos) ? 1 : 0;
-        $primos += in_array($ar["d"], $numerosPrimos) ? 1 : 0;
-        $primos += in_array($ar["e"], $numerosPrimos) ? 1 : 0;
-        $primos += in_array($ar["f"], $numerosPrimos) ? 1 : 0;
-        
-        //$strSQL = "UPDATE tbl_SenaJogos SET media = $media WHERE cd = ".$ar["cd"]." LIMIT 1 ";
-        //$conn->query($strSQL);
-        if ($primos >= 3){
-            $query = "DELETE FROM tbl_SenaJogos WHERE cd = {$ar['cd']} LIMIT 1 ";
-            $conn->query($query);
-            // echo '<hr>'.PHP_EOL.$primos.PHP_EOL;
-            // echo PHP_EOL;
-            $nrExcluidos++;
+        $res = $conn->query($strSQL);
+        while ($ar = $res->fetch_array()) {
+            $primos = 0;
+            //if (in_array($arSorteado["num"], $numerosPrimos)){$primos++;}
+            $primos += in_array($ar["a"], $numerosPrimos) ? 1 : 0;
+            $primos += in_array($ar["b"], $numerosPrimos) ? 1 : 0;
+            $primos += in_array($ar["c"], $numerosPrimos) ? 1 : 0;
+            $primos += in_array($ar["d"], $numerosPrimos) ? 1 : 0;
+            $primos += in_array($ar["e"], $numerosPrimos) ? 1 : 0;
+            $primos += in_array($ar["f"], $numerosPrimos) ? 1 : 0;
+
+            //$strSQL = "UPDATE tbl_SenaJogos SET media = $media WHERE cd = ".$ar["cd"]." LIMIT 1 ";
+            //$conn->query($strSQL);
+            if ($primos >= 3) {
+                $query = "DELETE FROM tbl_SenaJogos WHERE cd = {$ar['cd']} LIMIT 1 ";
+                $conn->query($query);
+                // echo '<hr>'.PHP_EOL.$primos.PHP_EOL;
+                // echo PHP_EOL;
+                $nrExcluidos++;
+            }
+            //echo $primos;
         }
-        //echo $primos;
-    }
-    echo '<h2>Primos excluídos: '.$nrExcluidos.'</h2>'.PHP_EOL;
-    break;
+        echo '<h2>Primos excluídos: '.$nrExcluidos.'</h2>'.PHP_EOL;
+        break;
 
     case "combinacoes_1x1x1x1x1x1":
-      $where = '
+        $where = '
                 a <= 10
                 AND b > 10 AND b <=20
                 AND c > 20 AND c <=30
@@ -233,81 +230,81 @@ case "primos":
 
         break;
 
-        case "2_dezena_acima_50":
-          $where = '
+    case "2_dezena_acima_50":
+        $where = '
                     f >= 50
                     AND e >= 50
                     AND d >= 50';
-            $strSQL = "
+        $strSQL = "
                 SELECT COUNT(*) as nrTotal
                 FROM tbl_SenaJogos
                 WHERE $where
                 ";
-            $res = $conn->query($strSQL);
-            $ar = $res->fetch_array();
-            echo "2_dezena_acima_50: " . $ar["nrTotal"].'<br />';
-            if ($_POST["acao"] == "executar") {
-                $query = "
+        $res = $conn->query($strSQL);
+        $ar = $res->fetch_array();
+        echo "2_dezena_acima_50: " . $ar["nrTotal"].'<br />';
+        if ($_POST["acao"] == "executar") {
+            $query = "
                     DELETE FROM tbl_SenaJogos
                     WHERE $where
                 ";
-                $results = $conn->query($query);
-                var_dump($results);
-            }
-            if ($_POST["acao"] == "ver") {
-                $query = "
+            $results = $conn->query($query);
+            var_dump($results);
+        }
+        if ($_POST["acao"] == "ver") {
+            $query = "
                     SELECT a,b,c,d,e,f FROM tbl_SenaJogos 
                     WHERE $where
                 ";
-                $results = $conn->query($query);
-                echo "<pre>$query</pre>";
-                while($ar = $results->fetch_array()) {
-                    echo $ar['a'] . ' ' . $ar['b'] . ' ' . $ar['c'] . ' ' . $ar['d'] . ' ' . $ar['e'] . ' ' . $ar['f'] . ' <br />' . PHP_EOL; 
-                }
+            $results = $conn->query($query);
+            echo "<pre>$query</pre>";
+            while ($ar = $results->fetch_array()) {
+                echo $ar['a'] . ' ' . $ar['b'] . ' ' . $ar['c'] . ' ' . $ar['d'] . ' ' . $ar['e'] . ' ' . $ar['f'] . ' <br />' . PHP_EOL;
             }
-    
-            break;
+        }
 
-            case "1_dezena_acima_50":
-              $where = '
+        break;
+
+    case "1_dezena_acima_50":
+        $where = '
                         f < 50
                         OR e >= 50
                         OR d >= 50
                         OR c >= 50
                         OR b >= 50
                         OR a >= 50';
-                $strSQL = "
+        $strSQL = "
                     SELECT COUNT(*) as nrTotal
                     FROM tbl_SenaJogos
                     WHERE $where
                     ";
-                $res = $conn->query($strSQL);
-                $ar = $res->fetch_array();
-                echo "1_dezena_acima_50: " . $ar["nrTotal"].'<br />';
-                if ($_POST["acao"] == "executar") {
-                    $query = "
+        $res = $conn->query($strSQL);
+        $ar = $res->fetch_array();
+        echo "1_dezena_acima_50: " . $ar["nrTotal"].'<br />';
+        if ($_POST["acao"] == "executar") {
+            $query = "
                         DELETE FROM tbl_SenaJogos
                         WHERE $where
                     ";
-                    $results = $conn->query($query);
-                    var_dump($results);
-                }
-                if ($_POST["acao"] == "ver") {
-                    $query = "
+            $results = $conn->query($query);
+            var_dump($results);
+        }
+        if ($_POST["acao"] == "ver") {
+            $query = "
                         SELECT a,b,c,d,e,f FROM tbl_SenaJogos 
                         WHERE $where
                     ";
-                    $results = $conn->query($query);
-                    echo "<pre>$query</pre>";
-                    while($ar = $results->fetch_array()) {
-                        echo $ar['a'] . ' ' . $ar['b'] . ' ' . $ar['c'] . ' ' . $ar['d'] . ' ' . $ar['e'] . ' ' . $ar['f'] . ' <br />' . PHP_EOL; 
-                    }
-                }
-        
-                break;
+            $results = $conn->query($query);
+            echo "<pre>$query</pre>";
+            while ($ar = $results->fetch_array()) {
+                echo $ar['a'] . ' ' . $ar['b'] . ' ' . $ar['c'] . ' ' . $ar['d'] . ' ' . $ar['e'] . ' ' . $ar['f'] . ' <br />' . PHP_EOL;
+            }
+        }
+
+        break;
 
     case "primeiro_maior_que_20":
-      $where = '
+        $where = '
                 a > 20';
         $strSQL = "
             SELECT COUNT(*) as nrTotal
@@ -332,8 +329,8 @@ case "primos":
             ";
             $results = $conn->query($query);
             echo "<pre>$query</pre>";
-            while($ar = $results->fetch_array()) {
-                echo $ar['a'] . ' ' . $ar['b'] . ' ' . $ar['c'] . ' ' . $ar['d'] . ' ' . $ar['e'] . ' ' . $ar['f'] . ' <br />' . PHP_EOL; 
+            while ($ar = $results->fetch_array()) {
+                echo $ar['a'] . ' ' . $ar['b'] . ' ' . $ar['c'] . ' ' . $ar['d'] . ' ' . $ar['e'] . ' ' . $ar['f'] . ' <br />' . PHP_EOL;
             }
         }
 
@@ -414,13 +411,11 @@ Filtrar: números primos: <input type="hidden" name="f" value="primos"><input ty
 </form>
 <hr>
 <?php
-if (@$_POST["f"] == "media")
-{
-    ?><p>manter 3 pares e 3 ímpares</p><?php 
+if (@$_POST["f"] == "media") {
+    ?><p>manter 3 pares e 3 ímpares</p><?php
     $strSQL = " SELECT * FROM tbl_SenaJogos ";
     $res = $conn->query($strSQL);
-    while($ar = $res->fetch_array())
-    {
+    while ($ar = $res->fetch_array()) {
         $nrPares = 0;
 
         $nrPares += !($ar["a"] % 2) ? 1 : 0;
@@ -429,10 +424,10 @@ if (@$_POST["f"] == "media")
         $nrPares += !($ar["d"] % 2) ? 1 : 0;
         $nrPares += !($ar["e"] % 2) ? 1 : 0;
         $nrPares += !($ar["f"] % 2) ? 1 : 0;
-        
+
         //$strSQL = "UPDATE tbl_SenaJogos SET media = $media WHERE cd = ".$ar["cd"]." LIMIT 1 ";
         //$conn->query($strSQL);
-        if ($nrPares <> 3){
+        if ($nrPares <> 3) {
             $query = "DELETE FROM tbl_SenaJogos WHERE cd = {$ar['cd']} LIMIT 1 ";
             $conn->query($query);
         }
@@ -441,13 +436,11 @@ if (@$_POST["f"] == "media")
 
 }
 
-if (@$_POST["f"] == "4224")
-{
-    ?><p>manter 2~4 pares e 4~2 ímpares</p><?php 
+if (@$_POST["f"] == "4224") {
+    ?><p>manter 2~4 pares e 4~2 ímpares</p><?php
     $strSQL = " SELECT * FROM tbl_SenaJogos ";
     $res = $conn->query($strSQL);
-    while($ar = $res->fetch_array())
-    {
+    while ($ar = $res->fetch_array()) {
         $nrPares = 0;
 
         $nrPares += !($ar["a"] % 2) ? 1 : 0;
@@ -456,10 +449,10 @@ if (@$_POST["f"] == "4224")
         $nrPares += !($ar["d"] % 2) ? 1 : 0;
         $nrPares += !($ar["e"] % 2) ? 1 : 0;
         $nrPares += !($ar["f"] % 2) ? 1 : 0;
-        
+
         //$strSQL = "UPDATE tbl_SenaJogos SET media = $media WHERE cd = ".$ar["cd"]." LIMIT 1 ";
         //$conn->query($strSQL);
-        if ( $nrPares == 0 ||  $nrPares == 1 ||  $nrPares == 5 || $nrPares == 6 ){
+        if ($nrPares == 0 ||  $nrPares == 1 ||  $nrPares == 5 || $nrPares == 6) {
             $query = "DELETE FROM tbl_SenaJogos WHERE cd = {$ar['cd']} LIMIT 1 ";
             $conn->query($query);
         }
@@ -468,14 +461,12 @@ if (@$_POST["f"] == "4224")
 
 }
 
-if (@$_POST["f"] == "maior40")
-{
-    ?><p>até 2 números maiores que 40</p><?php 
+if (@$_POST["f"] == "maior40") {
+    ?><p>até 2 números maiores que 40</p><?php
     $strSQL = " SELECT * FROM tbl_SenaJogos ";
     $res = $conn->query($strSQL);
     $nrExcluidos = 0;
-    while($ar = $res->fetch_array())
-    {
+    while ($ar = $res->fetch_array()) {
         $nrQtdd = 0;
 
         $nrQtdd += ($ar["a"] > 40) ? 1 : 0;
@@ -484,10 +475,10 @@ if (@$_POST["f"] == "maior40")
         $nrQtdd += ($ar["d"] > 40) ? 1 : 0;
         $nrQtdd += ($ar["e"] > 40) ? 1 : 0;
         $nrQtdd += ($ar["f"] > 40) ? 1 : 0;
-        
+
         //$strSQL = "UPDATE tbl_SenaJogos SET media = $media WHERE cd = ".$ar["cd"]." LIMIT 1 ";
         //$conn->query($strSQL);
-        if ($nrQtdd > 2){
+        if ($nrQtdd > 2) {
             $query = "DELETE FROM tbl_SenaJogos WHERE cd = {$ar['cd']} LIMIT 1 ";
             $conn->query($query);
             $nrExcluidos++;
@@ -510,6 +501,6 @@ Filtrar: limitar a 2 dezenas maiores que 40 <input type="hidden" name="f" value=
 </form>
 <br><br>
 <p>
-Jogos: <strong><?php 
+Jogos: <strong><?php
 $strSQL = "SELECT COUNT(*) FROM tbl_SenaJogos";
 $res = $conn->query($strSQL);

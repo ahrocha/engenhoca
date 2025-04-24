@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 class SecurityService
@@ -18,4 +19,3 @@ class SecurityService
         return in_array($_SERVER['REMOTE_ADDR'], $this->allowedIps);
     }
 }
-

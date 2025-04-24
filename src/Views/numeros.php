@@ -5,7 +5,7 @@
 
 if (isset($numeros) && is_array($numeros)) {
     extract($numeros);
-    
+
     echo implode(' ', $linhaA).'<br />';
     echo implode(' ', $linhaB).'<br />';
     echo implode(' ', $linhaC).'<br />';
